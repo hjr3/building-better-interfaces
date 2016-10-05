@@ -1,0 +1,6 @@
+[package]
+name = "building-better-interfaces"
+version = "0.1.0"
+authors = ["Herman J. Radtke III <herman@hermanradtke.com>"]
+
+[dependencies]
