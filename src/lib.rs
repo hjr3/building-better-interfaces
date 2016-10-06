@@ -155,7 +155,7 @@ impl ToOwned for NameStr {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::borrow::{Borrow, BorrowMut};
+    use std::borrow::{Borrow, BorrowMut, Cow};
 
     #[test]
     fn name_string_push() {
@@ -320,5 +320,19 @@ mod tests {
         let name_str = NameStr::new("Given S. Family");
         let name_string = NameString::from_str("Given S. Family");
         assert_eq!(name_string, name_str.to_owned());
+    }
+
+    #[test]
+    fn name_cow() {
+        let name_string = NameString::from_str("Name");
+        let name_str = NameStr::new("Name");
+
+        let given = my_cow(Cow::Borrowed(name_str));
+        assert_eq!(name_str, given.borrow());
+        assert_eq!(name_string, given.into_owned());
+
+        fn my_cow<'a>(n: Cow<'a, NameStr>) -> Cow<'a, NameStr> {
+            n
+        }
     }
 }
