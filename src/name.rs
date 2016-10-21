@@ -302,12 +302,6 @@ mod tests {
     }
 
     #[test]
-    fn test_name_str_mut() {
-        let mut name = NameString::from_str("Name");
-        let _name_ref: &mut NameStr = name.as_mut_name_str();
-    }
-
-    #[test]
     fn test_name_str_to_name_string() {
         let name_str = NameStr::new("Given S. Family");
         let mut name_string = NameString::new();
