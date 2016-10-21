@@ -1,9 +1,9 @@
 use std::ops::{Deref, DerefMut};
 use std::convert::From;
-use std::borrow::{Borrow, BorrowMut, ToOwned};
+use std::borrow::{Borrow, BorrowMut, Cow};
 use std::mem;
 
-#[derive(Eq, PartialEq, Debug)]
+#[derive(Eq, PartialEq, Debug, Clone)]
 pub struct NameString {
     inner: String,
 }
@@ -138,6 +138,16 @@ impl NameStr {
             inner: self.inner.to_string()
         }
     }
+
+    pub fn to_uppercase(&self) -> Cow<NameStr> {
+        if self.inner.chars().all(|b| b.is_uppercase()) {
+            Cow::Borrowed(self)
+        } else {
+            let mut name_string = self.to_name_string();
+            name_string.uppercase();
+            Cow::Owned(name_string)
+        }
+    }
 }
 
 impl AsRef<NameStr> for NameStr {
@@ -152,7 +162,6 @@ impl AsMut<NameStr> for NameStr {
     }
 }
 
-// note: requires borrow to be implemented
 impl ToOwned for NameStr {
     type Owned = NameString;
 
@@ -376,5 +385,17 @@ mod tests {
         fn my_cow<'a>(n: Cow<'a, NameStr>) -> Cow<'a, NameStr> {
             n
         }
+    }
+
+    #[test]
+    fn test_name_str_to_uppercase() {
+        let uc_name_str = NameStr::new("NAME");
+
+        assert_eq!(Cow::Borrowed(uc_name_str), uc_name_str.to_uppercase());
+
+        let uc_name_string: Cow<NameStr> = Cow::Owned(uc_name_str.to_owned());
+        let mixed_case_name_str = NameString::from_str("Name");
+
+        assert_eq!(uc_name_string, mixed_case_name_str.to_uppercase());
     }
 }
