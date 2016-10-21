@@ -15,7 +15,6 @@ impl NameString {
         }
     }
 
-    // TODO: fix this into a trait
     pub fn from_str(s: &str) -> NameString {
         NameString {
             inner: s.to_string()
@@ -26,9 +25,12 @@ impl NameString {
         self.inner.push_str(part)
     }
 
-    // We can later use Deref to make this work automatically
     pub fn as_name_str(&self) -> &NameStr {
-        NameStr::new(self.inner.as_str())
+        unsafe { mem::transmute(& *self.inner) }
+    }
+
+    pub fn as_mut_name_str(&mut self) -> &mut NameStr {
+        unsafe { mem::transmute(&mut *self.inner) }
     }
 
     // Note: Can later write this as Into<String>
@@ -45,26 +47,13 @@ impl NameString {
     pub fn uppercase(&mut self) {
         self.inner = self.inner.to_uppercase();
     }
-
-    // TODO: implement
-    //pub fn capitalize(&mut self) {
-    //    let c = self.inner.split_whitespace()
-    //        .map(|part| {
-    //            let mut char_indices = 
-    //            let f = part[0].to_uppercase().collect::<String>();
-    //            f.push_str(part[1..]);
-    //            f
-    //        }).collect::<String>();
-
-    //    self.inner = c;
-    //}
 }
 
 impl Deref for NameString {
     type Target = NameStr;
 
     fn deref(&self) -> &NameStr {
-        NameStr::new(self.inner.as_str())
+        unsafe { mem::transmute(& *self.inner) }
     }
 }
 
@@ -193,6 +182,12 @@ mod tests {
     }
 
     #[test]
+    fn test_name_string_as_mut_name_str() {
+        let mut name = NameString::from_str("Name");
+        let _name_ref: &mut NameStr = name.as_mut_name_str();
+    }
+
+    #[test]
     fn test_name_string_into_string() {
         let expected = String::from("Name");
         let mut given = NameString::new();
@@ -304,6 +299,12 @@ mod tests {
 
         let name = NameStr::new("Given S. Family");
         assert_eq!(Some("Given"), name.given());
+    }
+
+    #[test]
+    fn test_name_str_mut() {
+        let mut name = NameString::from_str("Name");
+        let _name_ref: &mut NameStr = name.as_mut_name_str();
     }
 
     #[test]
