@@ -157,7 +157,7 @@ mod tests {
     use std::borrow::{Borrow, BorrowMut, Cow};
 
     #[test]
-    fn name_string_push() {
+    fn test_name_string_push() {
         let expected = NameString { inner: "Given".to_string() };
         let mut given = NameString::new();
         given.push("Given");
@@ -169,7 +169,7 @@ mod tests {
     }
 
     #[test]
-    fn name_string_uppercase() {
+    fn test_name_string_uppercase() {
         let expected = NameString::from_str("NAME");
         let mut given = NameString:: from_str("Name");
         given.uppercase();
@@ -177,7 +177,7 @@ mod tests {
     }
 
     #[test]
-    fn name_string_from_str() {
+    fn test_name_string_from_str() {
         let mut expected = NameString::new();
         expected.push("Name");
         let given = NameString::from_str("Name");
@@ -185,7 +185,7 @@ mod tests {
     }
 
     #[test]
-    fn name_string_as_name_str() {
+    fn test_name_string_as_name_str() {
         let expected = NameStr::new("Name");
         let mut given = NameString::new();
         given.push("Name");
@@ -193,7 +193,7 @@ mod tests {
     }
 
     #[test]
-    fn name_string_into_string() {
+    fn test_name_string_into_string() {
         let expected = String::from("Name");
         let mut given = NameString::new();
         given.push("Name");
@@ -201,7 +201,7 @@ mod tests {
     }
 
     #[test]
-    fn name_string_deref() {
+    fn test_name_string_deref() {
         let given = NameString::from_str("Name");
         let expected = NameStr::new("Name");
         assert_eq!(expected, my_deref(&given));
@@ -212,7 +212,7 @@ mod tests {
     }
 
     #[test]
-    fn name_string_deref_mut() {
+    fn test_name_string_deref_mut() {
         let mut given = NameString::from_str("Name");
         let expected = NameStr::new("Name");
         assert_eq!(expected, my_deref_mut(&mut given));
@@ -223,28 +223,28 @@ mod tests {
     }
 
     #[test]
-    fn name_string_as_ref() {
+    fn test_name_string_as_ref() {
         let expected = NameStr::new("Name");
         let given = NameString::from_str("Name");
         assert_eq!(expected, given.as_ref());
     }
 
     #[test]
-    fn name_string_borrow() {
+    fn test_name_string_borrow() {
         let expected = NameStr::new("Name");
         let given = NameString::from_str("Name");
         assert_eq!(expected, given.borrow());
     }
 
     #[test]
-    fn name_string_borrow_mut() {
+    fn test_name_string_borrow_mut() {
         let mut expected = NameStr::new("Name");
         let mut given = NameString::from_str("Name");
         assert_eq!(&mut expected, &mut given.borrow_mut());
     }
 
     #[test]
-    fn name_string_from_string() {
+    fn test_name_string_from_string() {
         let expected = NameString::from_str("Name");
         let given = String::from("Name");
         assert_eq!(expected, NameString::from(given));
@@ -258,7 +258,7 @@ mod tests {
     }
 
     #[test]
-    fn name_string_into() {
+    fn test_name_string_into() {
         let expected = String::from("Name");
         let name = NameString::from_str("Name");
         let given: String = name.into();
@@ -266,21 +266,21 @@ mod tests {
     }
 
     #[test]
-    fn name_string_from_name_str() {
+    fn test_name_string_from_name_str() {
         let expected = NameString::from_str("Name");
         let given = NameStr::new("Name");
         assert_eq!(expected, NameString::from(given));
     }
 
     #[test]
-    fn name_str_into_name_string() {
+    fn test_name_str_into_name_string() {
         let expected = NameString::from_str("Name");
         let given = NameStr::new("Name");
         assert_eq!(expected, given.into());
     }
 
     #[test]
-    fn name_str_family() {
+    fn test_name_str_family() {
         let name = NameStr::new("");
         assert_eq!(None, name.family());
 
@@ -292,7 +292,7 @@ mod tests {
     }
 
     #[test]
-    fn name_str_given() {
+    fn test_name_str_given() {
         let name = NameStr::new("");
         assert_eq!(None, name.given());
 
@@ -307,7 +307,7 @@ mod tests {
     }
 
     #[test]
-    fn name_str_to_name_string() {
+    fn test_name_str_to_name_string() {
         let name_str = NameStr::new("Given S. Family");
         let mut name_string = NameString::new();
         name_string.push("Given S. Family");
@@ -315,14 +315,14 @@ mod tests {
     }
 
     #[test]
-    fn name_str_to_owned() {
+    fn test_name_str_to_owned() {
         let name_str = NameStr::new("Given S. Family");
         let name_string = NameString::from_str("Given S. Family");
         assert_eq!(name_string, name_str.to_owned());
     }
 
     #[test]
-    fn name_cow() {
+    fn test_name_cow() {
         let name_string = NameString::from_str("Name");
         let name_str = NameStr::new("Name");
 
