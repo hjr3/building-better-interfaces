@@ -38,6 +38,10 @@ impl NameString {
         self.inner
     }
 
+    pub fn as_str(&self) -> &str {
+        self.inner.as_str()
+    }
+
     // Note: This uses Deref to work
     // TODO fix this into a trait
     pub fn as_ref(&self) -> &NameStr {
@@ -193,6 +197,14 @@ mod tests {
         let mut given = NameString::new();
         given.push("Name");
         assert_eq!(expected, given.into_string());
+    }
+
+    #[test]
+    fn test_name_string_as_str() {
+        let expected = "Name";
+        let mut given = NameString::new();
+        given.push("Name");
+        assert_eq!(expected, given.as_str());
     }
 
     #[test]
