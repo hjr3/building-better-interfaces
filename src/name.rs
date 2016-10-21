@@ -53,6 +53,18 @@ impl NameString {
     }
 }
 
+impl AsRef<NameStr> for NameString {
+    fn as_ref(&self) -> &NameStr {
+        self.as_name_str()
+    }
+}
+
+impl AsMut<NameStr> for NameString {
+    fn as_mut(&mut self) -> &mut NameStr {
+        self.as_mut_name_str()
+    }
+}
+
 impl Deref for NameString {
     type Target = NameStr;
 
@@ -132,6 +144,18 @@ impl NameStr {
         NameString {
             inner: self.inner.to_string()
         }
+    }
+}
+
+impl AsRef<NameStr> for NameStr {
+    fn as_ref(&self) -> &NameStr {
+        self
+    }
+}
+
+impl AsMut<NameStr> for NameStr {
+    fn as_mut(&mut self) -> &mut NameStr {
+        self
     }
 }
 
@@ -234,6 +258,25 @@ mod tests {
         let expected = NameStr::new("Name");
         let given = NameString::from_str("Name");
         assert_eq!(expected, given.as_ref());
+    }
+
+    #[test]
+    fn test_name_string_as_mut() {
+        let mut name = NameString::from_str("Name");
+        let _name_ref: &mut NameStr = name.as_mut();
+    }
+
+    #[test]
+    fn test_name_str_as_ref() {
+        let expected = NameStr::new("Name");
+        assert_eq!(expected, expected.as_ref());
+    }
+
+    #[test]
+    fn test_name_str_as_mut() {
+        let mut name = NameString::from_str("Name");
+        let name_ref: &mut NameStr = name.as_mut();
+        let _expected: &mut NameStr = name_ref.as_mut();
     }
 
     #[test]
