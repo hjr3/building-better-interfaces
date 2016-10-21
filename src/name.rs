@@ -1,6 +1,4 @@
 use std::ops::{Deref, DerefMut};
-use std::convert::From;
-use std::borrow::{Borrow, BorrowMut, ToOwned};
 use std::mem;
 
 #[derive(Eq, PartialEq, Debug)]
@@ -72,40 +70,6 @@ impl DerefMut for NameString {
     }
 }
 
-impl<'a> From<&'a NameStr> for NameString {
-    fn from(n: &'a NameStr) -> Self {
-        NameString {
-            inner: n.inner.to_string()
-        }
-    }
-}
-
-impl From<String> for NameString {
-    fn from(s: String) -> Self {
-        NameString {
-            inner: s
-        }
-    }
-}
-
-impl Into<String> for NameString {
-    fn into(self) -> String {
-        self.inner
-    }
-}
-
-impl Borrow<NameStr> for NameString {
-    fn borrow(&self) -> &NameStr {
-        self
-    }
-}
-
-impl BorrowMut<NameStr> for NameString {
-    fn borrow_mut(&mut self) -> &mut NameStr {
-        self
-    }
-}
-
 #[derive(Eq, PartialEq, Debug)]
 pub struct NameStr {
     // allowed per https://doc.rust-lang.org/book/unsized-types.html
@@ -152,19 +116,9 @@ impl AsMut<NameStr> for NameStr {
     }
 }
 
-// note: requires borrow to be implemented
-impl ToOwned for NameStr {
-    type Owned = NameString;
-
-    fn to_owned(&self) -> NameString {
-        self.to_name_string()
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::borrow::{Borrow, BorrowMut, Cow};
 
     #[test]
     fn test_name_string_push() {
@@ -273,56 +227,6 @@ mod tests {
     }
 
     #[test]
-    fn test_name_string_borrow() {
-        let expected = NameStr::new("Name");
-        let given = NameString::from_str("Name");
-        assert_eq!(expected, given.borrow());
-    }
-
-    #[test]
-    fn test_name_string_borrow_mut() {
-        let mut expected = NameStr::new("Name");
-        let mut given = NameString::from_str("Name");
-        assert_eq!(&mut expected, &mut given.borrow_mut());
-    }
-
-    #[test]
-    fn test_name_string_from_string() {
-        let expected = NameString::from_str("Name");
-        let given = String::from("Name");
-        assert_eq!(expected, NameString::from(given));
-    }
-
-    #[test]
-    fn string_into_name_string() {
-        let expected = NameString::from_str("Name");
-        let given = String::from("Name");
-        assert_eq!(expected, given.into());
-    }
-
-    #[test]
-    fn test_name_string_into() {
-        let expected = String::from("Name");
-        let name = NameString::from_str("Name");
-        let given: String = name.into();
-        assert_eq!(expected, given);
-    }
-
-    #[test]
-    fn test_name_string_from_name_str() {
-        let expected = NameString::from_str("Name");
-        let given = NameStr::new("Name");
-        assert_eq!(expected, NameString::from(given));
-    }
-
-    #[test]
-    fn test_name_str_into_name_string() {
-        let expected = NameString::from_str("Name");
-        let given = NameStr::new("Name");
-        assert_eq!(expected, given.into());
-    }
-
-    #[test]
     fn test_name_str_family() {
         let name = NameStr::new("");
         assert_eq!(None, name.family());
@@ -355,26 +259,5 @@ mod tests {
         let mut name_string = NameString::new();
         name_string.push("Given S. Family");
         assert_eq!(name_string, name_str.to_name_string());
-    }
-
-    #[test]
-    fn test_name_str_to_owned() {
-        let name_str = NameStr::new("Given S. Family");
-        let name_string = NameString::from_str("Given S. Family");
-        assert_eq!(name_string, name_str.to_owned());
-    }
-
-    #[test]
-    fn test_name_cow() {
-        let name_string = NameString::from_str("Name");
-        let name_str = NameStr::new("Name");
-
-        let given = my_cow(Cow::Borrowed(name_str));
-        assert_eq!(name_str, given.borrow());
-        assert_eq!(name_string, given.into_owned());
-
-        fn my_cow<'a>(n: Cow<'a, NameStr>) -> Cow<'a, NameStr> {
-            n
-        }
     }
 }
