@@ -1,8 +1,9 @@
 use name::NameStr;
+use std::borrow::Cow;
 
 #[derive(Debug, Eq, PartialEq)]
 pub struct Roster<'a> {
-    pub names: Vec<&'a NameStr>,
+    pub names: Vec<Cow<'a, NameStr>>,
 }
 
 impl<'a> Roster<'a> {
@@ -13,7 +14,7 @@ impl<'a> Roster<'a> {
     }
 
     pub fn add_name(&mut self, name: &'a NameStr) {
-        self.names.push(name)
+        self.names.push(name.to_uppercase())
     }
 }
 
