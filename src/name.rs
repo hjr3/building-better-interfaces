@@ -33,19 +33,12 @@ impl NameString {
         unsafe { mem::transmute(&mut *self.inner) }
     }
 
-    // Note: Can later write this as Into<String>
     pub fn into_string(self) -> String {
         self.inner
     }
 
     pub fn as_str(&self) -> &str {
         self.inner.as_str()
-    }
-
-    // Note: This uses Deref to work
-    // TODO fix this into a trait
-    pub fn as_ref(&self) -> &NameStr {
-        self
     }
 
     pub fn uppercase(&mut self) {
