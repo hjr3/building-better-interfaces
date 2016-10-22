@@ -148,10 +148,6 @@ impl NameStr {
             Cow::Owned(name_string)
         }
     }
-
-    pub fn try_into(&self) -> Result<Name, &'static str> {
-        Name::try_from(self)
-    }
 }
 
 impl AsRef<NameStr> for NameStr {
@@ -174,14 +170,38 @@ impl ToOwned for NameStr {
     }
 }
 
+// This is a copy of an unstable strait in Rust as of 1.12.1
+pub trait TryFrom<T> {
+    type Err;
+
+    fn try_from(T) -> Result<Self, Self::Err> where Self: Sized;
+}
+
+pub trait TryInto<T> {
+    type Err;
+
+    fn try_into(self) -> Result<T, Self::Err>;
+}
+
+impl<T, U> TryInto<U> for T where U: TryFrom<T> {
+    type Err = U::Err;
+
+    fn try_into(self) -> Result<U, U::Err> {
+        U::try_from(self)
+    }
+}
+//
+
 #[derive(Eq, PartialEq, Debug)]
 pub struct Name {
     given: NameString,
     family: NameString,
 }
 
-impl Name {
-    pub fn try_from(name: &NameStr) -> Result<Name, &'static str> {
+impl<'a> TryFrom<&'a NameStr> for Name {
+    type Err = &'static str;
+
+    fn try_from(name: &'a NameStr) -> Result<Name, Self::Err> {
         if name.family().is_none() {
             Err("Family name required")
         } else {
@@ -463,7 +483,7 @@ mod tests {
     #[test]
     fn test_name_str_try_into_err() {
         let name = NameStr::new("");
-        let given = name.try_into();
+        let given: Result<Name, &'static str>  = name.try_into();
 
         assert_eq!(Err("Family name required"), given);
     }
