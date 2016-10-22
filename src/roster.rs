@@ -19,7 +19,7 @@ impl<'a> Roster<'a> {
 }
 
 #[cfg(test)]
-mod test {
+mod tests {
     use super::*;
     use name::{NameStr, NameString};
 

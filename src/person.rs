@@ -16,7 +16,7 @@ impl Person {
 }
 
 #[cfg(test)]
-mod test {
+mod tests {
     use super::*;
     use name::{NameStr, NameString};
 
