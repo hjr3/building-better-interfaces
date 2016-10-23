@@ -41,6 +41,10 @@ impl NameString {
         self.inner.as_str()
     }
 
+    pub fn as_mut_str(&mut self) -> &mut str {
+        self.inner.as_mut_str()
+    }
+
     pub fn uppercase(&mut self) {
         self.inner = self.inner.to_uppercase();
     }
@@ -148,6 +152,10 @@ impl NameStr {
             Cow::Owned(name_string)
         }
     }
+
+    pub fn to_string(&self) -> String {
+        self.inner.to_string()
+    }
 }
 
 impl AsRef<NameStr> for NameStr {
@@ -167,6 +175,12 @@ impl ToOwned for NameStr {
 
     fn to_owned(&self) -> NameString {
         self.to_name_string()
+    }
+}
+
+impl<'a> Into<String> for &'a NameStr {
+    fn into(self) -> String {
+        self.to_string()
     }
 }
 
@@ -283,6 +297,14 @@ mod tests {
         let mut given = NameString::new();
         given.push("Name");
         assert_eq!(expected, given.as_str());
+    }
+
+    #[test]
+    fn test_name_string_as_mut_str() {
+        let mut name = "Name".to_string();
+        let expected = name.as_mut_str();
+        let mut given = NameString::from_str("Name");
+        assert_eq!(expected, given.as_mut_str());
     }
 
     #[test]
@@ -510,5 +532,23 @@ mod tests {
         };
 
         assert_eq!(Ok(expected), given);
+    }
+
+    #[test]
+    fn test_name_str_to_string() {
+        let name = NameStr::new("Name");
+        let given = name.to_string();
+        let expected = "Name".to_string();
+
+        assert_eq!(expected, given);
+    }
+
+    #[test]
+    fn test_name_str_into() {
+        let name = NameStr::new("Name");
+        let given: String = name.into();
+        let expected = "Name".to_string();
+
+        assert_eq!(expected, given);
     }
 }

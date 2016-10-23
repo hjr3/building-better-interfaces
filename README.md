@@ -1,15 +1,12 @@
 # Building Better Interfaces
 
-Goals tomorrow:
-
-* practice run
-* finish exercises
-
 A set of code that demonstrates how to create interfaces that take advantage of existing Rust naming conventions.
+
+All code was tested on stable Rust. As of this writing, stable Rust version `1.12.1`.
 
 ## Workshop Requiresments
 
-* People need laptop with Rust installed if they want to participate in the exercises.
+* You will need a laptop with Rust installed if they want to participate in the exercises.
 
 ## Introduction To Owned and Borrowed Types
 
@@ -56,15 +53,15 @@ A set of code that demonstrates how to create interfaces that take advantage of 
 
 ### Exercises
 
+* Branch: exercise-1
+* play.rust-lang.org link: https://is.gd/BCK4eC
+
 0. Convert a `NameString` into a mutable `str` reference.
   * Answer: `NameString::as_mut_str()`
-0. Create a `NameString` from a `String` type.
-  * Answer: `NameString::from_string()`
-0. Convert a `NameStr` into a `String` type. Extra credit: Do it two different ways.
+0. Convert a `NameStr` to a `String` type. Extra credit: Do it using the Into trait.
   * Answer: `NameStr::to_string()`
   * Extra credit: `NameStr::Into<String>()`
-0. Use the Deref trait to convert a `NameString` to a `str` reference.
-  * Answer: Implement Deref for `*str`.
+0. Create a `Courses` type that can accept `String` or `&str`.
 
 ### Copy-on-write (Cow)
 

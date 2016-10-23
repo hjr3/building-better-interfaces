@@ -3,3 +3,4 @@ pub mod roster;
 pub mod person;
 pub mod classroom;
 pub mod student;
+pub mod courses;
