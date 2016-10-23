@@ -294,6 +294,9 @@ mod tests {
         fn my_deref(n: &NameStr) -> &NameStr {
             n
         }
+
+        let given = NameString::from_str("Given Family");
+        assert_eq!(Some("Family"), given.family());
     }
 
     #[test]
