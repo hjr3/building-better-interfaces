@@ -43,7 +43,7 @@ All code was tested on stable Rust. As of this writing, stable Rust version `1.1
   * Now go back and update `NameString::as_ref()` and `NameString::as_name_str()`.
   * Now go back and update `NameString::as_mut()` and `NameString::as_mut_name_str()`.
   * Show how Deref also let's us share methods.
-* Convert between `NameString` and `NameStr`. Branch: name_string-from-into
+* Convert between `NameString` and `NameStr`. Branch: name-string-from-into
   * Show how to create `NameString::From<NameStr>()`.
   * Show how to create `NameStr::Into<NameString>()`.
   * Show how to create `NameString::From<String>()`.
