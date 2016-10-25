@@ -105,7 +105,7 @@ All code was tested on stable Rust. As of this writing, stable Rust version `1.1
   * Create a `Student` type, an `InClass<T>` type and a `Recess<T>` type.
   * Show how to use Deref to allow the `InClass` and `Recess` types to call methods on `NameStr`.
   * Transition: What if we wanted to assign this student to a seat in the classroom?
-* Safely ensure that a student has an assigned seat.
+* Safely ensure that a student has an assigned seat. Branch: seat-assign
   * Show how to use a closure to safely assign a seat to a Student.
 * Pause for questions on this section.
 
