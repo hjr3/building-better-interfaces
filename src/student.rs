@@ -1,11 +1,22 @@
 use std::ops::Deref;
 use name::NameString;
 
+#[derive(Debug, Eq, PartialEq)]
 pub struct Student {
     name: NameString,
+    seat: usize,
 }
 
 impl Student {
+    pub fn new<I>(name: I, seat: usize) -> Student
+        where I: Into<NameString>
+    {
+        Student {
+            name: name.into(),
+            seat: seat,
+        }
+    }
+
     pub fn name(&self) -> &NameString {
         &self.name
     }
@@ -71,12 +82,12 @@ mod tests {
     #[test]
     fn test_student_state_changes() {
 
-        let me = Student { name: NameString::from_str("Herman") };
+        let me = Student::new(NameString::from_str("Herman"), 0);
         let me_in_class = InClass { inner: me };
         let me_at_recess = me_in_class.play();
         let _me_back_in_class = me_at_recess.learn();
 
-        let me = Student { name: NameString::from_str("Herman") };
+        let me = Student::new(NameString::from_str("Herman"), 0);
         let me_at_recess = Recess { inner: me };
         assert_eq!("WOO!", me_at_recess.shout());
         let _me_in_class = me_at_recess.learn();
@@ -84,13 +95,13 @@ mod tests {
 
     #[test]
     fn test_student_deref_name_str() {
-        let me = Student { name: NameString::from_str("Herman Radtke") };
+        let me = Student::new(NameString::from_str("Herman Radtke"), 0);
         assert_eq!(Some("Herman"), me.given());
     }
 
     #[test]
     fn test_in_class_deref_name_str() {
-        let me = Student { name: NameString::from_str("Herman Radtke") };
+        let me = Student::new(NameString::from_str("Herman Radtke"), 0);
         let me_in_class = InClass { inner: me };
         assert_eq!(Some("Herman"), me_in_class.given());
     }

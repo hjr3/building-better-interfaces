@@ -1,96 +1,67 @@
-use name::NameString;
-use roster::Roster;
+use student::Student;
 
 #[derive(Debug, Eq, PartialEq)]
 pub struct Classroom {
-    names: Vec<NameString>,
+    seats: Vec<Option<Student>>,
 }
 
 impl Classroom {
     pub fn new() -> Classroom {
+        Classroom::with_seats(32)
+    }
+
+    pub fn with_seats(seat_cnt: usize) -> Classroom {
+
+        let seats = (0..seat_cnt)
+            .map(|_| None)
+            .collect::<Vec<_>>();
+
         Classroom {
-            names: Vec::new(),
+            seats: seats,
         }
     }
 
-    pub fn with_names(names: Vec<NameString>) -> Classroom {
-        Classroom {
-            names: names
-        }
-    }
-
-    pub fn add_name<I>(&mut self, name: I)
-        where I: Into<NameString>
+    pub fn add_student<F>(&mut self, f: F) -> Result<usize, &'static str>
+        where F: FnOnce(usize) -> Student
     {
-        self.names.push(name.into())
-    }
-
-    pub fn as_roster(&self) -> Roster {
-        let mut r = Roster::new();
-
-        for name in self.names.iter() {
-            r.add_name(name);
+        match self.seats.iter().position(|seat| seat.is_none()) {
+            Some(seat) => {
+                let student = f(seat);
+                self.seats.push(Some(student));
+                Ok(seat)
+            }
+            None => {
+                Err("No more seats available")
+            }
         }
-
-        r
     }
 }
 
 #[cfg(test)]
 mod test {
     use super::*;
-    use name::{NameStr, NameString};
-    use roster::Roster;
+    use name::NameString;
+    use student::Student;
 
     #[test]
-    fn test_classroom_new() {
-        let _ = Classroom::new();
-    }
-
-    #[test]
-    fn test_classroom_add_name() {
-        let name = NameString::from_str("Name");
+    fn test_classroom_add_student() {
 
         let mut c = Classroom::new();
-        c.add_name(name);
+        let seat = c.add_student(|seat| {
+            Student::new(NameString::from_str("Name"), seat)
+        });
+
+        assert_eq!(Ok(0), seat);
     }
 
     #[test]
-    fn test_classroom_add_name_using_into() {
-        let mut c = Classroom::new();
-        c.add_name(NameStr::new("Name"));
-    }
+    fn test_classroom_add_student_fails() {
 
-    #[test]
-    fn test_classroom_with_names() {
-        let names = vec![
-            NameString::from_str("Name1"),
-            NameString::from_str("Name2"),
-        ];
+        let mut c = Classroom::with_seats(0);
+        let seat = c.add_student(|seat| {
+            Student::new(NameString::from_str("Name"), seat)
+        });
 
-        let given = Classroom::with_names(names);
-
-        let mut expected = Classroom::new();
-        expected.add_name(NameString::from_str("Name1"));
-        expected.add_name(NameString::from_str("Name2"));
-
-        assert_eq!(expected, given);
-    }
-
-    #[test]
-    fn test_classroom_as_roster() {
-        let names = vec![
-            NameString::from_str("Name1"),
-            NameString::from_str("Name2"),
-        ];
-
-        let c = Classroom::with_names(names);
-        let given = c.as_roster();
-
-        let mut expected = Roster::new();
-        expected.add_name(NameStr::new("Name1"));
-        expected.add_name(NameStr::new("Name2"));
-
-        assert_eq!(expected, given);
+        assert_eq!(Err("No more seats available"), seat);
     }
 }
