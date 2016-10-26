@@ -170,56 +170,10 @@ impl ToOwned for NameStr {
     }
 }
 
-// This is a copy of an unstable strait in Rust as of 1.12.1
-pub trait TryFrom<T> {
-    type Err;
-
-    fn try_from(T) -> Result<Self, Self::Err> where Self: Sized;
-}
-
-pub trait TryInto<T> {
-    type Err;
-
-    fn try_into(self) -> Result<T, Self::Err>;
-}
-
-impl<T, U> TryInto<U> for T where U: TryFrom<T> {
-    type Err = U::Err;
-
-    fn try_into(self) -> Result<U, U::Err> {
-        U::try_from(self)
-    }
-}
-//
-
 #[derive(Eq, PartialEq, Debug)]
 pub struct Name {
     given: NameString,
     family: NameString,
-}
-
-impl<'a> TryFrom<&'a NameStr> for Name {
-    type Err = &'static str;
-
-    fn try_from(name: &'a NameStr) -> Result<Name, Self::Err> {
-        if name.family().is_none() {
-            Err("Family name required")
-        } else {
-            let given = match name.given() {
-                Some(n) => NameString::from_str(n),
-                None => NameString::new(),
-            };
-
-            let family = NameString::from_str(name.family().expect("Family name required"));
-
-            Ok(
-                Name {
-                    given: given,
-                    family: family,
-                }
-            )
-        }
-    }
 }
 
 #[cfg(test)]
@@ -449,63 +403,5 @@ mod tests {
         let mixed_case_name_str = NameString::from_str("Name");
 
         assert_eq!(uc_name_string, mixed_case_name_str.to_uppercase());
-    }
-
-    #[test]
-    fn test_name_try_from_err() {
-        let name = NameString::new();
-        let given = Name::try_from(&name);
-
-        assert_eq!(Err("Family name required"), given);
-    }
-
-    #[test]
-    fn test_name_try_from_ok() {
-        let name = NameString::from_str("Family");
-        let given = Name::try_from(&name);
-        let expected = Name {
-            given: NameString::new(),
-            family: NameString::from_str("Family"),
-        };
-
-        assert_eq!(Ok(expected), given);
-
-        let name = NameString::from_str("Given Family");
-        let given = Name::try_from(&name);
-        let expected = Name {
-            given: NameString::from_str("Given"),
-            family: NameString::from_str("Family"),
-        };
-
-        assert_eq!(Ok(expected), given);
-    }
-
-    #[test]
-    fn test_name_str_try_into_err() {
-        let name = NameStr::new("");
-        let given: Result<Name, &'static str>  = name.try_into();
-
-        assert_eq!(Err("Family name required"), given);
-    }
-
-    #[test]
-    fn test_name_str_try_into_ok() {
-        let name = NameStr::new("Family");
-        let given = name.try_into();
-        let expected = Name {
-            given: NameString::new(),
-            family: NameString::from_str("Family"),
-        };
-
-        assert_eq!(Ok(expected), given);
-
-        let name = NameStr::new("Given Family");
-        let given = name.try_into();
-        let expected = Name {
-            given: NameString::from_str("Given"),
-            family: NameString::from_str("Family"),
-        };
-
-        assert_eq!(Ok(expected), given);
     }
 }
