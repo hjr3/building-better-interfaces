@@ -580,9 +580,9 @@ mod tests {
 
         assert_eq!(Cow::Borrowed(lc_name_str), lc_name_str.to_lowercase());
 
-        let uc_name_string: Cow<NameStr> = Cow::Owned(lc_name_str.to_owned());
-        let mixed_case_name_str = NameString::from_str("Name");
+        let lc_name_string: Cow<NameStr> = Cow::Owned(lc_name_str.to_owned());
+        let mixed_case_name_str = NameStr::new("Name");
 
-        assert_eq!(uc_name_string, mixed_case_name_str.to_lowercase());
+        assert_eq!(lc_name_string, mixed_case_name_str.to_lowercase());
     }
 }
