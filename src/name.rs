@@ -48,6 +48,10 @@ impl NameString {
     pub fn uppercase(&mut self) {
         self.inner = self.inner.to_uppercase();
     }
+
+    pub fn lowercase(&mut self) {
+        self.inner = self.inner.to_lowercase();
+    }
 }
 
 impl AsRef<NameStr> for NameString {
@@ -149,6 +153,16 @@ impl NameStr {
         } else {
             let mut name_string = self.to_name_string();
             name_string.uppercase();
+            Cow::Owned(name_string)
+        }
+    }
+
+    pub fn to_lowercase(&self) -> Cow<NameStr> {
+        if self.inner.chars().all(|b| b.is_lowercase()) {
+            Cow::Borrowed(self)
+        } else {
+            let mut name_string = self.to_name_string();
+            name_string.lowercase();
             Cow::Owned(name_string)
         }
     }
@@ -550,5 +564,25 @@ mod tests {
         let expected = "Name".to_string();
 
         assert_eq!(expected, given);
+    }
+
+    #[test]
+    fn test_name_string_lowercase() {
+        let expected = NameString::from_str("name");
+        let mut given = NameString:: from_str("Name");
+        given.lowercase();
+        assert_eq!(expected, given);
+    }
+
+    #[test]
+    fn test_name_str_to_lowercase() {
+        let lc_name_str = NameStr::new("name");
+
+        assert_eq!(Cow::Borrowed(lc_name_str), lc_name_str.to_lowercase());
+
+        let uc_name_string: Cow<NameStr> = Cow::Owned(lc_name_str.to_owned());
+        let mixed_case_name_str = NameString::from_str("Name");
+
+        assert_eq!(uc_name_string, mixed_case_name_str.to_lowercase());
     }
 }

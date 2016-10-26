@@ -40,6 +40,12 @@ impl<T> InClass<T> {
             inner: self.inner,
         }
     }
+
+    pub fn rest(self) -> Home<T> {
+        Home {
+            inner: self.inner,
+        }
+    }
 }
 
 impl<T> Deref for InClass<T> {
@@ -74,6 +80,18 @@ impl<T> Deref for Recess<T> {
     }
 }
 
+pub struct Home<T> {
+    inner: T,
+}
+
+impl<T> Home<T> {
+    pub fn learn(self) -> InClass<T> {
+        InClass {
+            inner: self.inner
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use student::{Student, InClass, Recess};
@@ -104,5 +122,13 @@ mod tests {
         let me = Student::new(NameString::from_str("Herman Radtke"), 0);
         let me_in_class = InClass { inner: me };
         assert_eq!(Some("Herman"), me_in_class.given());
+    }
+
+    #[test]
+    fn test_student_state_change_home() {
+        let me = Student::new(NameString::from_str("Herman"), 0);
+        let me_in_class = InClass { inner: me };
+        let me_at_home = me_in_class.rest();
+        let _me_back_in_class = me_at_home.learn();
     }
 }
